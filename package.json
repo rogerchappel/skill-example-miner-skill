@@ -1,0 +1,25 @@
+{
+  "name": "skill-example-miner-skill",
+  "version": "0.1.0",
+  "description": "Mine completed agent runs into safe reusable skill examples.",
+  "type": "module",
+  "bin": {
+    "skill-example-miner": "./bin/cli.js"
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node scripts/check.js",
+    "smoke": "node bin/cli.js fixtures/run-note.md"
+  },
+  "keywords": [
+    "agent-skill",
+    "agents",
+    "cli",
+    "dry-run"
+  ],
+  "author": "Roger Chappel",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  }
+}
