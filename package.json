@@ -9,7 +9,10 @@
   "scripts": {
     "test": "node --test",
     "check": "node scripts/check.js",
-    "smoke": "node bin/cli.js fixtures/run-note.md"
+    "smoke": "node bin/cli.js fixtures/run-note.md",
+    "lint": "npm run check",
+    "package:smoke": "npm pack --dry-run",
+    "release:check": "npm run check && npm run test && npm run smoke && npm run package:smoke"
   },
   "keywords": [
     "agent-skill",
@@ -21,5 +24,20 @@
   "license": "MIT",
   "engines": {
     "node": ">=20"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rogerchappel/skill-example-miner-skill.git"
+  },
+  "files": [
+    "bin",
+    "src",
+    "docs",
+    "fixtures",
+    "examples",
+    "scripts",
+    "SKILL.md",
+    "README.md",
+    "LICENSE"
+  ]
 }
