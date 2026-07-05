@@ -11,7 +11,7 @@
     "check": "node scripts/check.js",
     "smoke": "node bin/cli.js fixtures/run-note.md",
     "lint": "npm run check",
-    "package:smoke": "npm pack --dry-run",
+    "package:smoke": "node scripts/package-smoke.js",
     "release:check": "npm run check && npm run test && npm run smoke && npm run package:smoke"
   },
   "keywords": [
