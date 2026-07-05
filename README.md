@@ -26,6 +26,18 @@ node bin/cli.js fixtures/run-note.md
 node bin/cli.js fixtures/run-note.md --format=json
 ```
 
+## Release Verification
+
+Run the full release gate before opening a release-facing pull request:
+
+```bash
+npm run release:check
+```
+
+The gate runs static checks, Node tests, a fixture-backed CLI smoke, and a
+structured package smoke that verifies the tarball includes the CLI, library,
+fixture, example output, release notes, and skill docs.
+
 ## Safety Notes
 
 - Reads local files only.
