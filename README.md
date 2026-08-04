@@ -16,14 +16,21 @@ node bin/cli.js fixtures/run-note.md --format=json
 ## CLI
 
 ```bash
-skill-example-miner <file> [--format=json]
+skill-example-miner <file> [--format <markdown|json>]
 ```
+
+The default format is `markdown`. The format option accepts either
+`--format=json` or the split form `--format json`; `--json` is a shorthand.
+Options may appear before or after the input file. Use `--help` to print the
+usage summary.
 
 ## Examples
 
 ```bash
 node bin/cli.js fixtures/run-note.md
 node bin/cli.js fixtures/run-note.md --format=json
+node bin/cli.js --format json fixtures/run-note.md
+node bin/cli.js --json fixtures/run-note.md
 ```
 
 ## Release Verification
