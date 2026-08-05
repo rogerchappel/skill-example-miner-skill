@@ -2,7 +2,8 @@
 
 ## Inputs
 
-- Local fixture path.
+- Local fixture path containing case-insensitive supported labels at the start
+  of individual lines, with each value on the same line as its label.
 - Optional `--format=json` flag.
 
 ## Steps
@@ -15,5 +16,6 @@
 ## Failure Modes
 
 - Missing file: CLI exits non-zero.
-- Missing fields: report uses `Not found`.
+- Missing or empty fields: report uses `Not found` without consuming the next
+  line.
 - Warning terms: report sets review/high risk but does not block output.

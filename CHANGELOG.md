@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Anchor supported input labels to individual lines so unrelated words and
+  empty fields cannot capture a value from surrounding text.
 - Make CLI argument parsing deterministic, reject unsupported arguments with
   usage diagnostics, and support both equals and split `--format` syntax.
 
