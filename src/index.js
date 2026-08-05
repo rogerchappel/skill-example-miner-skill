@@ -3,38 +3,38 @@ import fs from 'node:fs';
 const ROWS = [
   [
     "Task",
-    "task:\\s*(.+)",
-    "i"
+    "^[ \\t]*task:[ \\t]*(.*)$",
+    "im"
   ],
   [
     "Trigger",
-    "trigger:\\s*(.+)",
-    "i"
+    "^[ \\t]*trigger:[ \\t]*(.*)$",
+    "im"
   ],
   [
     "Inputs",
-    "inputs:\\s*(.+)",
-    "i"
+    "^[ \\t]*inputs:[ \\t]*(.*)$",
+    "im"
   ],
   [
     "Constraints",
-    "constraints:\\s*(.+)",
-    "i"
+    "^[ \\t]*constraints:[ \\t]*(.*)$",
+    "im"
   ],
   [
     "Tools",
-    "tools:\\s*(.+)",
-    "i"
+    "^[ \\t]*tools:[ \\t]*(.*)$",
+    "im"
   ],
   [
     "Verification",
-    "verification:\\s*(.+)",
-    "i"
+    "^[ \\t]*verification:[ \\t]*(.*)$",
+    "im"
   ],
   [
     "Outcome",
-    "outcome:\\s*(.+)",
-    "i"
+    "^[ \\t]*outcome:[ \\t]*(.*)$",
+    "im"
   ]
 ];
 const WARNING_TERMS = [
