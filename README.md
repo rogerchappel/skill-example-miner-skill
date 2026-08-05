@@ -24,6 +24,22 @@ The default format is `markdown`. The format option accepts either
 Options may appear before or after the input file. Use `--help` to print the
 usage summary.
 
+## Input Format
+
+The miner recognizes `Task`, `Trigger`, `Inputs`, `Constraints`, `Tools`,
+`Verification`, and `Outcome` as case-insensitive labels at the start of their
+own lines. Put each value on the same line as its label:
+
+```text
+Task: prepare a reusable example
+Trigger: maintainer requests a release review
+Verification: npm run release:check
+Outcome: reviewable local output
+```
+
+Indented labels are accepted. Empty fields are reported as `Not found`, and
+text such as `Subtask:` or `Other Task:` is not treated as `Task:`.
+
 ## Examples
 
 ```bash
