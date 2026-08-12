@@ -40,9 +40,9 @@ const ROWS = [
 const WARNING_TERMS = [
   "PRIVATE",
   "token_",
-  "sk-",
   "@example.com"
 ];
+const SK_CREDENTIAL_PATTERN = /(?:^|[^a-z0-9])sk-[a-z0-9_-]{8,}(?=$|[^a-z0-9_-])/i;
 
 export function readInput(file) {
   return fs.readFileSync(file, 'utf8');
@@ -55,6 +55,7 @@ export function analyzeText(text) {
     fields[label] = match && match[1] ? clean(match[1]) : 'Not found';
   }
   const warnings = WARNING_TERMS.filter((term) => text.toLowerCase().includes(term.toLowerCase()));
+  if (SK_CREDENTIAL_PATTERN.test(text)) warnings.push('sk-');
   return {
     title: 'Skill Example Candidate',
     fields,

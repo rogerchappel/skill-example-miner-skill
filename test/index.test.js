@@ -14,6 +14,32 @@ test('flags configured review terms', () => {
   assert.ok(result.warnings.includes('PRIVATE'));
 });
 
+test('flags credential-shaped sk- tokens', () => {
+  for (const text of [
+    'Credential: sk-exampleCredential123',
+    'Credential: (SK-PROJ-example_Credential-123)'
+  ]) {
+    assert.ok(analyzeText(text).warnings.includes('sk-'));
+  }
+});
+
+test('does not flag sk- embedded in ordinary words', () => {
+  for (const text of [
+    'Task: assess risk-based planning',
+    'Use mask-based filtering',
+    'The prefix is sk-',
+    'A short placeholder is sk-demo'
+  ]) {
+    assert.ok(!analyzeText(text).warnings.includes('sk-'));
+  }
+});
+
+test('keeps PRIVATE and token_ substring indicators', () => {
+  const result = analyzeText('PRIVATE notes include mytoken_example');
+  assert.ok(result.warnings.includes('PRIVATE'));
+  assert.ok(result.warnings.includes('token_'));
+});
+
 test('matches supported fields only when their labels start a line', () => {
   const result = analyzeText([
     'Subtask: do not treat this as Task',

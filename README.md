@@ -67,9 +67,16 @@ fixture, example output, release notes, and skill docs.
 - Does not call external services.
 - Does not approve, publish, send, or write outside stdout.
 - Treat warnings as review prompts, not perfect policy enforcement.
+- Matches `PRIVATE`, `token_`, and `@example.com` as case-insensitive
+  substrings. It reports `sk-` only when it starts a separate token followed by
+  at least eight ASCII letters, digits, underscores, or hyphens. This avoids
+  treating ordinary words such as `risk-based` as credentials.
 
 ## Limitations
 
 - V1 uses deterministic fixture parsing and conservative warning terms.
+- The `sk-` heuristic is not credential validation: short, unusual, or
+  differently prefixed secrets can be missed, and credential-shaped example
+  text can still require review.
 - It is designed for small local plans and run notes, not full transcript warehouses.
 - Human review is still required before public reuse or external action.
