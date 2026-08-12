@@ -31,6 +31,16 @@ test('prints JSON with equals, split, and alias format arguments', () => {
   }
 });
 
+test('reports credential-shaped tokens without flagging ordinary sk- substrings', () => {
+  const warningResult = run(['fixtures/credential-warning.md', '--json']);
+  assert.equal(warningResult.status, 0);
+  assert.ok(JSON.parse(warningResult.stdout).warnings.includes('sk-'));
+
+  const ordinaryResult = run(['fixtures/ordinary-hyphens.md', '--json']);
+  assert.equal(ordinaryResult.status, 0);
+  assert.ok(!JSON.parse(ordinaryResult.stdout).warnings.includes('sk-'));
+});
+
 test('accepts an explicit Markdown format', () => {
   const result = run(['--format', 'markdown', 'fixtures/run-note.md']);
   assert.equal(result.status, 0);
