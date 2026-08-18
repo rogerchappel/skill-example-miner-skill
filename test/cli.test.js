@@ -48,6 +48,32 @@ test('accepts an explicit Markdown format', () => {
   assert.equal(result.stderr, '');
 });
 
+test('rejects repeated output format selectors before reading input', () => {
+  for (const args of [
+    ['missing-input.md', '--format=json', '--format=json'],
+    ['missing-input.md', '--format', 'markdown', '--format', 'markdown']
+  ]) {
+    const result = run(args);
+    assert.equal(result.status, 1);
+    assert.equal(result.stdout, '');
+    assert.match(result.stderr, /output format may only be specified once/);
+    assert.doesNotMatch(result.stderr, /ENOENT/);
+  }
+});
+
+test('rejects mixed output format selectors', () => {
+  for (const args of [
+    ['fixtures/run-note.md', '--json', '--format', 'markdown'],
+    ['--format=json', 'fixtures/run-note.md', '--json'],
+    ['--format', 'markdown', '--format=json', 'fixtures/run-note.md']
+  ]) {
+    const result = run(args);
+    assert.equal(result.status, 1);
+    assert.equal(result.stdout, '');
+    assert.match(result.stderr, /output format may only be specified once/);
+  }
+});
+
 test('rejects unknown options with usage on stderr', () => {
   const result = run(['fixtures/run-note.md', '--bogus']);
   assert.equal(result.status, 1);
