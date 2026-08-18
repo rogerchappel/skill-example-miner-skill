@@ -11,6 +11,15 @@ function fail(message) {
 function parseArgs(args) {
   let file;
   let format = 'markdown';
+  let formatSelected = false;
+
+  function selectFormat(value) {
+    if (formatSelected) {
+      fail('output format may only be specified once');
+    }
+    formatSelected = true;
+    format = value;
+  }
 
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index];
@@ -20,7 +29,7 @@ function parseArgs(args) {
     }
 
     if (arg === '--json') {
-      format = 'json';
+      selectFormat('json');
       continue;
     }
 
@@ -29,16 +38,17 @@ function parseArgs(args) {
       if (!value || value.startsWith('--')) {
         fail('option --format requires a value');
       }
-      format = value;
+      selectFormat(value);
       index += 1;
       continue;
     }
 
     if (arg.startsWith('--format=')) {
-      format = arg.slice('--format='.length);
-      if (!format) {
+      const value = arg.slice('--format='.length);
+      if (!value) {
         fail('option --format requires a value');
       }
+      selectFormat(value);
       continue;
     }
 
