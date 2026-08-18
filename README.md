@@ -21,8 +21,9 @@ skill-example-miner <file> [--format <markdown|json>]
 
 The default format is `markdown`. The format option accepts either
 `--format=json` or the split form `--format json`; `--json` is a shorthand.
-Options may appear before or after the input file. Use `--help` to print the
-usage summary.
+Specify only one of these selectors per invocation; repeated or conflicting
+selectors fail with `output format may only be specified once`. Options may
+appear before or after the input file. Use `--help` to print the usage summary.
 
 ## Input Format
 
