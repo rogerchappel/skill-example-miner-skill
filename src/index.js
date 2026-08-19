@@ -49,11 +49,7 @@ export function readInput(file) {
 }
 
 export function analyzeText(text) {
-  const fields = {};
-  for (const [label, source, flags] of ROWS) {
-    const match = text.match(new RegExp(source, flags));
-    fields[label] = match && match[1] ? clean(match[1]) : 'Not found';
-  }
+  const fields = parseFields(text);
   const warnings = WARNING_TERMS.filter((term) => text.toLowerCase().includes(term.toLowerCase()));
   if (SK_CREDENTIAL_PATTERN.test(text)) warnings.push('sk-');
   return {
@@ -67,6 +63,39 @@ export function analyzeText(text) {
       'Keep external side effects behind approval'
     ]
   };
+}
+
+function parseFields(text) {
+  const trimmed = text.trimStart();
+  if (trimmed.startsWith('{')) {
+    let input;
+    try {
+      input = JSON.parse(text);
+    } catch (error) {
+      throw new Error(`invalid JSON input: ${error.message}`);
+    }
+
+    const entries = new Map(
+      Object.entries(input).map(([key, value]) => [key.toLowerCase(), value])
+    );
+    return Object.fromEntries(ROWS.map(([label]) => {
+      const value = entries.get(label.toLowerCase());
+      return [label, normalizeJsonValue(value)];
+    }));
+  }
+
+  return Object.fromEntries(ROWS.map(([label, source, flags]) => {
+    const match = text.match(new RegExp(source, flags));
+    return [label, match && match[1] ? clean(match[1]) : 'Not found'];
+  }));
+}
+
+function normalizeJsonValue(value) {
+  if (value === null || value === undefined || typeof value === 'object') {
+    return 'Not found';
+  }
+  const normalized = String(value).trim();
+  return normalized || 'Not found';
 }
 
 export function mineExamples(file) {
