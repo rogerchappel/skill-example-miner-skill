@@ -1,5 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import { mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { analyzeText, mineExamples, toMarkdown } from '../src/index.js';
 
 test('analyzes fixture into structured result', () => {
@@ -86,4 +90,39 @@ test('parses every populated canonical field', () => {
     Verification: 'release check',
     Outcome: 'ready'
   });
+});
+
+test('parses a populated JSON object like equivalent labeled text', () => {
+  const values = {
+    Task: 'prepare release',
+    Trigger: 'maintainer request',
+    Inputs: 'repository',
+    Constraints: 'remain local',
+    Tools: 'npm',
+    Verification: 'release check',
+    Outcome: 'ready'
+  };
+
+  assert.deepEqual(analyzeText(JSON.stringify(values)).fields, values);
+});
+
+test('reports missing and empty JSON properties as Not found', () => {
+  const result = analyzeText(JSON.stringify({ Task: '', Trigger: 'run', Inputs: null }));
+
+  assert.equal(result.fields.Task, 'Not found');
+  assert.equal(result.fields.Trigger, 'run');
+  assert.equal(result.fields.Inputs, 'Not found');
+  assert.equal(result.fields.Outcome, 'Not found');
+});
+
+test('malformed JSON input produces a clear nonzero CLI error', () => {
+  const directory = mkdtempSync(join(tmpdir(), 'skill-example-miner-test-'));
+  const file = join(directory, 'run-note.json');
+  writeFileSync(file, '{"Task": "broken"');
+
+  const result = spawnSync(process.execPath, ['bin/cli.js', file], { encoding: 'utf8' });
+
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /invalid JSON input/i);
+  assert.equal(result.stdout, '');
 });
