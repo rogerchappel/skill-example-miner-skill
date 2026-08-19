@@ -6,7 +6,9 @@ Use this skill when an agent needs to convert completed run notes or transcript 
 
 ## Required Inputs
 
-- A local Markdown, JSON, or text fixture.
+- A local Markdown or text fixture with supported line-leading labels, or a
+  JSON object using the same `Task`, `Trigger`, `Inputs`, `Constraints`,
+  `Tools`, `Verification`, and `Outcome` property names.
 - A clear intended output: Markdown report or JSON summary.
 - Permission to read the local fixture.
 
@@ -34,6 +36,10 @@ The CLI only reads local files and writes stdout. It must not publish examples, 
 node bin/cli.js fixtures/run-note.md
 node bin/cli.js fixtures/run-note.md --format=json
 ```
+
+JSON property names are case-insensitive. Missing, empty, `null`, array, and
+object values are reported as `Not found`; malformed JSON fails without
+producing a report.
 
 ## Validation
 
