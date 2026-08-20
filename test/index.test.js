@@ -106,6 +106,31 @@ test('parses a populated JSON object like equivalent labeled text', () => {
   assert.deepEqual(analyzeText(JSON.stringify(values)).fields, values);
 });
 
+test('keeps JSON field values inside one escaped Markdown list item', () => {
+  const result = analyzeText(JSON.stringify({
+    Task: 'safe\r\n## Forged section\n- forged item with [link](target)'
+  }));
+  const markdown = toMarkdown(result);
+
+  assert.match(markdown, /- Task: safe ## Forged section \\- forged item with \\[link\\]\\\(target\\\)/);
+  assert.doesNotMatch(markdown, /^## Forged section$/m);
+  assert.doesNotMatch(markdown, /^- forged item/m);
+});
+
+test('does not render continuation lines from labeled text as Markdown structure', () => {
+  const result = analyzeText([
+    'Task: safe *literal* value',
+    '## Forged section',
+    '- forged item',
+    'Outcome: complete'
+  ].join('\r\n'));
+  const markdown = toMarkdown(result);
+
+  assert.match(markdown, /- Task: safe \\\*literal\\\* value/);
+  assert.doesNotMatch(markdown, /^## Forged section$/m);
+  assert.doesNotMatch(markdown, /^- forged item/m);
+});
+
 test('reports missing and empty JSON properties as Not found', () => {
   const result = analyzeText(JSON.stringify({ Task: '', Trigger: 'run', Inputs: null }));
 

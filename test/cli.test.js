@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 const cli = new URL('../bin/cli.js', import.meta.url);
 
@@ -45,6 +48,22 @@ test('accepts an explicit Markdown format', () => {
   const result = run(['--format', 'markdown', 'fixtures/run-note.md']);
   assert.equal(result.status, 0);
   assert.match(result.stdout, /^# Skill Example Candidate/m);
+  assert.equal(result.stderr, '');
+});
+
+test('keeps multiline JSON values inside one Markdown finding', () => {
+  const directory = mkdtempSync(join(tmpdir(), 'skill-example-miner-cli-test-'));
+  const file = join(directory, 'multiline.json');
+  writeFileSync(file, JSON.stringify({
+    Task: 'safe\n## Forged section\n- forged item'
+  }));
+
+  const result = run([file]);
+
+  assert.equal(result.status, 0);
+  assert.match(result.stdout, /- Task: safe ## Forged section \\- forged item/);
+  assert.doesNotMatch(result.stdout, /^## Forged section$/m);
+  assert.doesNotMatch(result.stdout, /^- forged item$/m);
   assert.equal(result.stderr, '');
 });
 
