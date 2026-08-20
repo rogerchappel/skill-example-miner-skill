@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Parse documented JSON object fixtures into the same seven-field contract as
+  labeled text and reject malformed JSON with a clear CLI error.
 - Make `sk-` warnings token-aware so credential-shaped values remain reviewable
   without flagging ordinary embedded substrings such as `risk-based`.
 - Anchor supported input labels to individual lines so unrelated words and

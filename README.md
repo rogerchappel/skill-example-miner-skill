@@ -41,6 +41,21 @@ Outcome: reviewable local output
 Indented labels are accepted. Empty fields are reported as `Not found`, and
 text such as `Subtask:` or `Other Task:` is not treated as `Task:`.
 
+JSON fixtures use an object with the same seven property names (matched
+case-insensitively). String, number, and boolean values are normalized to
+text; missing, empty, `null`, array, and object values are reported as
+`Not found`. Input whose first non-whitespace character is `{` is treated as
+JSON, and malformed JSON exits nonzero with an `invalid JSON input` error.
+
+```json
+{
+  "Task": "prepare a reusable example",
+  "Trigger": "maintainer requests a release review",
+  "Verification": "npm run release:check",
+  "Outcome": "reviewable local output"
+}
+```
+
 ## Examples
 
 ```bash
