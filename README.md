@@ -46,6 +46,9 @@ case-insensitively). String, number, and boolean values are normalized to
 text; missing, empty, `null`, array, and object values are reported as
 `Not found`. Input whose first non-whitespace character is `{` is treated as
 JSON, and malformed JSON exits nonzero with an `invalid JSON input` error.
+Carriage returns and line feeds in scalar JSON values are collapsed to spaces.
+When producing Markdown, punctuation with Markdown syntax is backslash-escaped
+in every field value, so each value remains inside its single Findings item.
 
 ```json
 {

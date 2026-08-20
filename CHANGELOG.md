@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Keep user-controlled field values within one Markdown finding by collapsing
+  line breaks and escaping Markdown punctuation.
 - Parse documented JSON object fixtures into the same seven-field contract as
   labeled text and reject malformed JSON with a clear CLI error.
 - Make `sk-` warnings token-aware so credential-shaped values remain reviewable
