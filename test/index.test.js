@@ -112,7 +112,7 @@ test('keeps JSON field values inside one escaped Markdown list item', () => {
   }));
   const markdown = toMarkdown(result);
 
-  assert.match(markdown, /- Task: safe ## Forged section \\- forged item with \\[link\\]\\\(target\\\)/);
+  assert.ok(markdown.includes('- Task: safe \\#\\# Forged section \\- forged item with \\[link\\]\\(target\\)'));
   assert.doesNotMatch(markdown, /^## Forged section$/m);
   assert.doesNotMatch(markdown, /^- forged item/m);
 });

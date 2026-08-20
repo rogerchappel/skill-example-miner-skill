@@ -61,7 +61,7 @@ test('keeps multiline JSON values inside one Markdown finding', () => {
   const result = run([file]);
 
   assert.equal(result.status, 0);
-  assert.match(result.stdout, /- Task: safe ## Forged section \\- forged item/);
+  assert.match(result.stdout, /- Task: safe \\#\\# Forged section \\- forged item/);
   assert.doesNotMatch(result.stdout, /^## Forged section$/m);
   assert.doesNotMatch(result.stdout, /^- forged item$/m);
   assert.equal(result.stderr, '');

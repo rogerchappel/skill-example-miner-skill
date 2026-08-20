@@ -94,7 +94,7 @@ function normalizeJsonValue(value) {
   if (value === null || value === undefined || typeof value === 'object') {
     return 'Not found';
   }
-  const normalized = String(value).trim();
+  const normalized = normalizeFieldValue(value);
   return normalized || 'Not found';
 }
 
@@ -105,7 +105,7 @@ export function mineExamples(file) {
 export function toMarkdown(result) {
   const lines = ['# ' + result.title, '', 'Risk: ' + result.risk, '', '## Findings'];
   for (const [key, value] of Object.entries(result.fields)) {
-    lines.push('- ' + key + ': ' + value);
+    lines.push('- ' + key + ': ' + escapeMarkdownInline(value));
   }
   lines.push('', '## Warnings');
   if (result.warnings.length === 0) {
@@ -119,5 +119,13 @@ export function toMarkdown(result) {
 }
 
 function clean(value) {
-  return String(value).replace(/[",]+$/g, '').trim();
+  return normalizeFieldValue(String(value).replace(/[",]+$/g, ''));
+}
+
+function normalizeFieldValue(value) {
+  return String(value).replace(/[\r\n]+/g, ' ').trim();
+}
+
+function escapeMarkdownInline(value) {
+  return normalizeFieldValue(value).replace(/([\\`*_[\]{}()<>#+\-.!|])/g, '\\$1');
 }
