@@ -41,11 +41,15 @@ Outcome: reviewable local output
 Indented labels are accepted. Empty fields are reported as `Not found`, and
 text such as `Subtask:` or `Other Task:` is not treated as `Task:`.
 
-JSON fixtures use an object with the same seven property names (matched
-case-insensitively). String, number, and boolean values are normalized to
-text; missing, empty, `null`, array, and object values are reported as
-`Not found`. Input whose first non-whitespace character is `{` is treated as
-JSON, and malformed JSON exits nonzero with an `invalid JSON input` error.
+JSON fixtures must have a non-null, non-array object at the top level and use
+the same seven property names (matched case-insensitively). A supported name
+may appear only once after case normalization, so an object containing both
+`Task` and `task` exits nonzero instead of silently choosing one. String,
+number, and boolean field values are normalized to text; missing, empty,
+`null`, array, and object field values are reported as `Not found`. Input that
+begins like a JSON object, array, string, number, boolean, or `null` is treated
+as JSON. Malformed JSON and invalid top-level values exit nonzero with a clear
+diagnostic.
 Carriage returns and line feeds in scalar JSON values are collapsed to spaces.
 When producing Markdown, punctuation with Markdown syntax is backslash-escaped
 in every field value, so each value remains inside its single Findings item.

@@ -140,6 +140,50 @@ test('reports missing and empty JSON properties as Not found', () => {
   assert.equal(result.fields.Outcome, 'Not found');
 });
 
+test('rejects JSON top-level values that are not objects', () => {
+  for (const input of ['null', '[]', '"scalar"', '42', 'true']) {
+    assert.throws(
+      () => analyzeText(input),
+      /JSON input must be a non-null, non-array object/i
+    );
+  }
+});
+
+test('rejects duplicate supported JSON properties after case normalization', () => {
+  assert.throws(
+    () => analyzeText('{"Task":"first","task":"second"}'),
+    /duplicate JSON property for Task: Task, task/i
+  );
+});
+
+test('retains scalar normalization for valid JSON objects', () => {
+  const result = analyzeText('{"task":42,"TRIGGER":true,"Inputs":" repository "}');
+
+  assert.equal(result.fields.Task, '42');
+  assert.equal(result.fields.Trigger, 'true');
+  assert.equal(result.fields.Inputs, 'repository');
+});
+
+test('invalid JSON shapes and duplicate supported properties fail the CLI', () => {
+  const directory = mkdtempSync(join(tmpdir(), 'skill-example-miner-test-'));
+  const cases = [
+    ['null', /non-null, non-array object/i],
+    ['[]', /non-null, non-array object/i],
+    ['42', /non-null, non-array object/i],
+    ['{"Task":"first","task":"second"}', /duplicate JSON property for Task/i]
+  ];
+
+  for (const [input, diagnostic] of cases) {
+    const file = join(directory, 'run-note.json');
+    writeFileSync(file, input);
+    const result = spawnSync(process.execPath, ['bin/cli.js', file], { encoding: 'utf8' });
+
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, diagnostic);
+    assert.equal(result.stdout, '');
+  }
+});
+
 test('malformed JSON input produces a clear nonzero CLI error', () => {
   const directory = mkdtempSync(join(tmpdir(), 'skill-example-miner-test-'));
   const file = join(directory, 'run-note.json');
