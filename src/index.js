@@ -67,7 +67,7 @@ export function analyzeText(text) {
 
 function parseFields(text) {
   const trimmed = text.trimStart();
-  if (trimmed.startsWith('{')) {
+  if (looksLikeJson(trimmed)) {
     let input;
     try {
       input = JSON.parse(text);
@@ -75,9 +75,23 @@ function parseFields(text) {
       throw new Error(`invalid JSON input: ${error.message}`);
     }
 
-    const entries = new Map(
-      Object.entries(input).map(([key, value]) => [key.toLowerCase(), value])
-    );
+    if (input === null || Array.isArray(input) || typeof input !== 'object') {
+      throw new Error('JSON input must be a non-null, non-array object');
+    }
+
+    const supportedLabels = new Map(ROWS.map(([label]) => [label.toLowerCase(), label]));
+    const entries = new Map();
+    const originalKeys = new Map();
+    for (const [key, value] of Object.entries(input)) {
+      const normalizedKey = key.toLowerCase();
+      const label = supportedLabels.get(normalizedKey);
+      if (!label) continue;
+      if (entries.has(normalizedKey)) {
+        throw new Error(`duplicate JSON property for ${label}: ${originalKeys.get(normalizedKey)}, ${key}`);
+      }
+      entries.set(normalizedKey, value);
+      originalKeys.set(normalizedKey, key);
+    }
     return Object.fromEntries(ROWS.map(([label]) => {
       const value = entries.get(label.toLowerCase());
       return [label, normalizeJsonValue(value)];
@@ -88,6 +102,10 @@ function parseFields(text) {
     const match = text.match(new RegExp(source, flags));
     return [label, match && match[1] ? clean(match[1]) : 'Not found'];
   }));
+}
+
+function looksLikeJson(text) {
+  return /^[{["\d-]/.test(text) || /^(?:null|true|false)(?:\s|$)/.test(text);
 }
 
 function normalizeJsonValue(value) {
