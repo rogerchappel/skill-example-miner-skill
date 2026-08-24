@@ -7,7 +7,7 @@ This is a local-first agent skill package. It reads local fixtures, produces rev
 ## Quickstart
 
 ```bash
-npm install
+npm ci
 npm test
 npm run smoke
 node bin/cli.js fixtures/run-note.md --format=json
@@ -77,12 +77,15 @@ node bin/cli.js --json fixtures/run-note.md
 Run the full release gate before opening a release-facing pull request:
 
 ```bash
+npm ci
 npm run release:check
 ```
 
-The gate runs static checks, Node tests, a fixture-backed CLI smoke, and a
-structured package smoke that verifies the tarball includes the CLI, library,
-fixture, example output, release notes, and skill docs.
+The committed lockfile and clean install make the dependency tree reproducible.
+The release gate runs static checks, Node tests, a fixture-backed CLI smoke,
+and a structured package smoke that verifies the tarball includes the CLI,
+library, fixture, example output, release notes, and skill docs. CI runs the
+same frozen clean-install gate.
 
 ## Safety Notes
 
