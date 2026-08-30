@@ -72,7 +72,10 @@ function parseFields(text) {
     try {
       input = JSON.parse(text);
     } catch (error) {
-      throw new Error(`invalid JSON input: ${error.message}`);
+      if (trimmed.startsWith('{')) {
+        throw new Error(`invalid JSON input: ${error.message}`);
+      }
+      return parseLabeledText(text);
     }
 
     if (input === null || Array.isArray(input) || typeof input !== 'object') {
@@ -98,6 +101,10 @@ function parseFields(text) {
     }));
   }
 
+  return parseLabeledText(text);
+}
+
+function parseLabeledText(text) {
   return Object.fromEntries(ROWS.map(([label, source, flags]) => {
     const match = text.match(new RegExp(source, flags));
     return [label, match && match[1] ? clean(match[1]) : 'Not found'];

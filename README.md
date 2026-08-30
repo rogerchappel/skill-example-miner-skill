@@ -46,10 +46,12 @@ the same seven property names (matched case-insensitively). A supported name
 may appear only once after case normalization, so an object containing both
 `Task` and `task` exits nonzero instead of silently choosing one. String,
 number, and boolean field values are normalized to text; missing, empty,
-`null`, array, and object field values are reported as `Not found`. Input that
-begins like a JSON object, array, string, number, boolean, or `null` is treated
-as JSON. Malformed JSON and invalid top-level values exit nonzero with a clear
-diagnostic.
+`null`, array, and object field values are reported as `Not found`. Valid JSON
+values are treated as JSON, and non-object top-level values exit nonzero. An
+opening `{` marks intended JSON even when the object is malformed, preserving
+a clear parse diagnostic. Other JSON-like leading punctuation falls back to
+labeled-text parsing when the complete input is not valid JSON, so dated notes
+and quoted or bracketed prose remain supported.
 Carriage returns and line feeds in scalar JSON values are collapsed to spaces.
 When producing Markdown, punctuation with Markdown syntax is backslash-escaped
 in every field value, so each value remains inside its single Findings item.
