@@ -106,6 +106,24 @@ test('parses a populated JSON object like equivalent labeled text', () => {
   assert.deepEqual(analyzeText(JSON.stringify(values)).fields, values);
 });
 
+test('parses labeled text after non-JSON preambles with JSON-leading punctuation', () => {
+  for (const preamble of [
+    '2026-08-30 run note',
+    '- completed run note',
+    '"Quoted" run note',
+    '[Review] run note'
+  ]) {
+    const result = analyzeText([
+      preamble,
+      'Task: prepare release',
+      'Outcome: complete'
+    ].join('\n'));
+
+    assert.equal(result.fields.Task, 'prepare release', preamble);
+    assert.equal(result.fields.Outcome, 'complete', preamble);
+  }
+});
+
 test('keeps JSON field values inside one escaped Markdown list item', () => {
   const result = analyzeText(JSON.stringify({
     Task: 'safe\r\n## Forged section\n- forged item with [link](target)'
