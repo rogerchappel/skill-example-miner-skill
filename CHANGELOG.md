@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Keep dated, quoted, hyphenated, and bracketed prose on the labeled-text path
+  unless the complete input is valid JSON, while retaining object diagnostics.
 - Keep user-controlled field values within one Markdown finding by collapsing
   line breaks and escaping Markdown punctuation.
 - Parse documented JSON object fixtures into the same seven-field contract as
