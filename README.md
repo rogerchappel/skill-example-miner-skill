@@ -39,7 +39,10 @@ Outcome: reviewable local output
 ```
 
 Indented labels are accepted. Empty fields are reported as `Not found`, and
-text such as `Subtask:` or `Other Task:` is not treated as `Task:`.
+text such as `Subtask:` or `Other Task:` is not treated as `Task:`. Labeled
+values retain punctuation, including terminal quotes and commas; only
+surrounding whitespace and embedded carriage returns or line feeds are
+normalized.
 
 JSON fixtures must have a non-null, non-array object at the top level and use
 the same seven property names (matched case-insensitively). A supported name
