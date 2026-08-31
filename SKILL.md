@@ -39,7 +39,8 @@ node bin/cli.js fixtures/run-note.md --format=json
 
 JSON property names are case-insensitive. Missing, empty, `null`, array, and
 object values are reported as `Not found`; malformed JSON fails without
-producing a report.
+producing a report. Same-line labeled-text values retain terminal punctuation;
+the parser normalizes only surrounding whitespace and embedded newlines.
 
 ## Validation
 
