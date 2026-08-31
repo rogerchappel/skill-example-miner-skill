@@ -92,6 +92,20 @@ test('parses every populated canonical field', () => {
   });
 });
 
+test('preserves terminal punctuation in labeled text values', () => {
+  const result = analyzeText([
+    'Task: Preserve a quoted phrase "hello"',
+    'Trigger: ship this,',
+    'Inputs: "alpha",',
+    'Outcome: Keep the Oxford comma,'
+  ].join('\n'));
+
+  assert.equal(result.fields.Task, 'Preserve a quoted phrase "hello"');
+  assert.equal(result.fields.Trigger, 'ship this,');
+  assert.equal(result.fields.Inputs, '"alpha",');
+  assert.equal(result.fields.Outcome, 'Keep the Oxford comma,');
+});
+
 test('parses a populated JSON object like equivalent labeled text', () => {
   const values = {
     Task: 'prepare release',
@@ -180,6 +194,20 @@ test('retains scalar normalization for valid JSON objects', () => {
   assert.equal(result.fields.Task, '42');
   assert.equal(result.fields.Trigger, 'true');
   assert.equal(result.fields.Inputs, 'repository');
+});
+
+test('preserves terminal punctuation in JSON field values', () => {
+  const values = {
+    Task: 'Preserve a quoted phrase "hello"',
+    Trigger: 'ship this,',
+    Inputs: '"alpha",'
+  };
+
+  const result = analyzeText(JSON.stringify(values));
+
+  assert.equal(result.fields.Task, values.Task);
+  assert.equal(result.fields.Trigger, values.Trigger);
+  assert.equal(result.fields.Inputs, values.Inputs);
 });
 
 test('invalid JSON shapes and duplicate supported properties fail the CLI', () => {
