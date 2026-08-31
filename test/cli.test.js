@@ -34,6 +34,25 @@ test('prints JSON with equals, split, and alias format arguments', () => {
   }
 });
 
+test('preserves labeled terminal quotes and commas in JSON output', () => {
+  const directory = mkdtempSync(join(tmpdir(), 'skill-example-miner-cli-test-'));
+  const file = join(directory, 'punctuation.md');
+  writeFileSync(file, [
+    'Task: Preserve a quoted phrase "hello"',
+    'Trigger: ship this,',
+    'Inputs: "alpha",'
+  ].join('\n'));
+
+  const result = run([file, '--json']);
+  const fields = JSON.parse(result.stdout).fields;
+
+  assert.equal(result.status, 0);
+  assert.equal(fields.Task, 'Preserve a quoted phrase "hello"');
+  assert.equal(fields.Trigger, 'ship this,');
+  assert.equal(fields.Inputs, '"alpha",');
+  assert.equal(result.stderr, '');
+});
+
 test('reports credential-shaped tokens without flagging ordinary sk- substrings', () => {
   const warningResult = run(['fixtures/credential-warning.md', '--json']);
   assert.equal(warningResult.status, 0);
