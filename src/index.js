@@ -144,7 +144,7 @@ export function toMarkdown(result) {
 }
 
 function clean(value) {
-  return normalizeFieldValue(String(value).replace(/[",]+$/g, ''));
+  return normalizeFieldValue(value);
 }
 
 function normalizeFieldValue(value) {
