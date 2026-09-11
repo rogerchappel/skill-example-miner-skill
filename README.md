@@ -42,7 +42,9 @@ Indented labels are accepted. Empty fields are reported as `Not found`, and
 text such as `Subtask:` or `Other Task:` is not treated as `Task:`. Labeled
 values retain punctuation, including terminal quotes and commas; only
 surrounding whitespace and embedded carriage returns or line feeds are
-normalized.
+normalized. A single leading UTF-8 byte order mark (U+FEFF), commonly added
+by Windows editors, is stripped before parsing, so BOM-prefixed labeled notes
+and JSON fixtures are read the same way as files without one.
 
 JSON fixtures must have a non-null, non-array object at the top level and use
 the same seven property names (matched case-insensitively). A supported name
