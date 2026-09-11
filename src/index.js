@@ -43,9 +43,17 @@ const WARNING_TERMS = [
   "@example.com"
 ];
 const SK_CREDENTIAL_PATTERN = /(?:^|[^a-z0-9])sk-[a-z0-9_-]{8,}(?=$|[^a-z0-9_-])/i;
+const UTF8_BOM = '\uFEFF';
+
+// A single leading U+FEFF (commonly added by Windows editors) is not content:
+// it would otherwise hide the first labeled line from the anchored label
+// patterns and make JSON.parse reject otherwise valid fixtures.
+function stripUtf8Bom(text) {
+  return text.startsWith(UTF8_BOM) ? text.slice(UTF8_BOM.length) : text;
+}
 
 export function readInput(file) {
-  return fs.readFileSync(file, 'utf8');
+  return stripUtf8Bom(fs.readFileSync(file, 'utf8'));
 }
 
 export function analyzeText(text) {
@@ -65,7 +73,8 @@ export function analyzeText(text) {
   };
 }
 
-function parseFields(text) {
+function parseFields(rawText) {
+  const text = stripUtf8Bom(rawText);
   const trimmed = text.trimStart();
   if (looksLikeJson(trimmed)) {
     let input;

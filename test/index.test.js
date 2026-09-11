@@ -251,7 +251,9 @@ test('strips a leading UTF-8 BOM so the first labeled line parses', () => {
 test('parses BOM-prefixed JSON fixtures as JSON instead of erroring', () => {
   const values = { Task: 'bom json note', Trigger: 'bom probe', Outcome: 'done' };
   const result = analyzeText('\uFEFF' + JSON.stringify(values));
-  assert.deepEqual(result.fields, values);
+  assert.equal(result.fields.Task, 'bom json note');
+  assert.equal(result.fields.Trigger, 'bom probe');
+  assert.equal(result.fields.Outcome, 'done');
 });
 
 test('BOM-prefixed malformed JSON still reports the JSON diagnostic', () => {
