@@ -241,3 +241,37 @@ test('malformed JSON input produces a clear nonzero CLI error', () => {
   assert.match(result.stderr, /invalid JSON input/i);
   assert.equal(result.stdout, '');
 });
+
+test('strips a leading UTF-8 BOM so the first labeled line parses', () => {
+  const result = analyzeText('\uFEFFTask: bom labeled note\nOutcome: parsed');
+  assert.equal(result.fields.Task, 'bom labeled note');
+  assert.equal(result.fields.Outcome, 'parsed');
+});
+
+test('parses BOM-prefixed JSON fixtures as JSON instead of erroring', () => {
+  const values = { Task: 'bom json note', Trigger: 'bom probe', Outcome: 'done' };
+  const result = analyzeText('\uFEFF' + JSON.stringify(values));
+  assert.equal(result.fields.Task, 'bom json note');
+  assert.equal(result.fields.Trigger, 'bom probe');
+  assert.equal(result.fields.Outcome, 'done');
+});
+
+test('BOM-prefixed malformed JSON still reports the JSON diagnostic', () => {
+  assert.throws(() => analyzeText('\uFEFF{"Task": "broken"'), /invalid JSON input/i);
+});
+
+test('reads BOM-prefixed files through the same strip path', () => {
+  const directory = mkdtempSync(join(tmpdir(), 'skill-example-miner-test-'));
+  const file = join(directory, 'run-note.md');
+  writeFileSync(file, '\uFEFFTask: bom file note\nOutcome: parsed');
+
+  const result = mineExamples(file);
+  assert.equal(result.fields.Task, 'bom file note');
+  assert.equal(result.fields.Outcome, 'parsed');
+});
+
+test('inputs without a BOM are unchanged', () => {
+  const result = analyzeText('Task: plain note');
+  assert.equal(result.fields.Task, 'plain note');
+  assert.equal(result.fields.Outcome, 'Not found');
+});

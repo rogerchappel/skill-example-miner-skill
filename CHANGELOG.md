@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Strip a single leading UTF-8 byte order mark from inputs so BOM-prefixed
+  labeled notes parse their first-line field and BOM-prefixed JSON fixtures
+  parse as JSON instead of erroring.
 - Keep dated, quoted, hyphenated, and bracketed prose on the labeled-text path
   unless the complete input is valid JSON, while retaining object diagnostics.
 - Keep user-controlled field values within one Markdown finding by collapsing
